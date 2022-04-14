@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model model-name="ds_orders_d856ae06_42e8_4e3a_a593_2c13f4" version="0.0.2">
+  <layout>
+    <model/>
+    <classes>
+      <class name="Customer">
+        <property name="data" x="405" y="232"/>
+        <property name="defaultDeliveryAddress" x="405" y="292"/>
+      </class>
+      <class name="Vendor">
+        <property name="name" x="1901" y="1179"/>
+        <property name="pckgList" x="1901" y="1239"/>
+      </class>
+      <class name="CustomerPersonalData">
+        <property name="lastName" x="979" y="180"/>
+        <property name="firstName" x="979" y="120"/>
+      </class>
+      <class name="Order">
+        <property name="openOrderFlag" x="405" y="838"/>
+        <property name="deliveryAddress" x="405" y="778"/>
+        <property name="orderDate" x="405" y="958"/>
+        <property name="comment" x="405" y="898"/>
+        <property name="orderDetailList" x="405" y="1018"/>
+        <reference name="customer" x="405" y="718"/>
+      </class>
+      <class name="GoodType">
+        <property name="descr" x="1453" y="1421"/>
+        <property name="price" x="1453" y="1481"/>
+        <property name="name" x="1453" y="1361"/>
+        <reference name="vendor" x="1453" y="1301"/>
+      </class>
+      <class name="OrderDetail">
+        <property name="order" x="405" y="1331"/>
+        <reference name="goodType" x="405" y="1391"/>
+      </class>
+      <class name="Pckg">
+        <property name="vendor" x="1750" y="802"/>
+        <property name="deliveryAddress" x="1750" y="622"/>
+        <property name="serialNumber" x="1750" y="682"/>
+        <reference name="orderDetail" x="1750" y="742"/>
+      </class>
+      <class name="DeliveryAddress">
+        <property name="city" x="1132" y="492"/>
+        <property name="street" x="1132" y="552"/>
+        <property name="regionIso" x="1132" y="432"/>
+        <property name="flatNumber" x="1132" y="612"/>
+        <property name="countryIso" x="1132" y="372"/>
+      </class>
+    </classes>
+    <statuses class="Order">
+      <stakeholder-link code="Vendor">
+        <status code="DRAFT" x="1" y="-19"/>
+        <status code="FIXED" x="134" y="110"/>
+      </stakeholder-link>
+    </statuses>
+    <statuses class="OrderDetail">
+      <stakeholder-link code="Vendor">
+        <status code="PACKAGED" x="613" y="105"/>
+        <status code="OPEN" x="417" y="-19"/>
+      </stakeholder-link>
+    </statuses>
+  </layout>
+  <class name="Customer" strategy="JOINED" is-dictionary="false" is-abstract="false" embeddable="false">
+    <id category="MANUAL"/>
+    <property name="data" type="CustomerPersonalData"/>
+    <property name="defaultDeliveryAddress" type="DeliveryAddress"/>
+  </class>
+  <class name="Vendor" strategy="JOINED" is-dictionary="false" is-abstract="false" embeddable="false">
+    <id category="MANUAL"/>
+    <property name="name" type="STRING" length="254"/>
+    <property name="pckgList" type="Pckg" collection="SET" mappedBy="vendor"/>
+  </class>
+  <class name="CustomerPersonalData" is-dictionary="false" is-abstract="false" embeddable="true">
+    <property name="lastName" type="STRING" length="254"/>
+    <property name="firstName" type="STRING" length="254"/>
+  </class>
+  <class name="Order" strategy="JOINED" is-dictionary="false" is-abstract="false" embeddable="false">
+    <id category="SNOWFLAKE"/>
+    <property name="openOrderFlag" type="STRING" length="254"/>
+    <property name="deliveryAddress" type="DeliveryAddress"/>
+    <property name="orderDate" type="OFFSETDATETIME" parent="false" length="3" default-value="now"/>
+    <property name="comment" type="TEXT"/>
+    <property name="orderDetailList" type="OrderDetail" collection="SET" mappedBy="order"/>
+    <reference name="customer" type="Customer"/>
+    <index unique="true">
+      <property name="openOrderFlag"/>
+    </index>
+  </class>
+  <class name="GoodType" strategy="JOINED" is-dictionary="false" is-abstract="false" embeddable="false">
+    <id category="MANUAL"/>
+    <property name="descr" type="STRING" length="4000"/>
+    <property name="price" type="BIGDECIMAL" length="38"/>
+    <property name="name" type="STRING" length="254"/>
+    <reference name="vendor" type="Vendor"/>
+  </class>
+  <class name="OrderDetail" strategy="JOINED" is-dictionary="false" is-abstract="false" embeddable="false">
+    <property name="order" type="Order" parent="true"/>
+    <reference name="goodType" type="GoodType"/>
+  </class>
+  <class name="Pckg" strategy="JOINED" is-abstract="false" embeddable="false">
+    <property name="vendor" type="Vendor" parent="true"/>
+    <property name="deliveryAddress" type="DeliveryAddress"/>
+    <property name="serialNumber" type="STRING" length="254"/>
+    <reference name="orderDetail" type="OrderDetail"/>
+  </class>
+  <class name="DeliveryAddress" is-dictionary="false" is-abstract="false" embeddable="true">
+    <property name="city" type="STRING" length="63"/>
+    <property name="street" type="STRING" length="63"/>
+    <property name="regionIso" type="STRING" length="3"/>
+    <property name="flatNumber" type="STRING" length="254"/>
+    <property name="countryIso" type="STRING" length="2"/>
+  </class>
+  <status-classes class="Order">
+    <stakeholder code="Vendor" name="Продавец продукции"/>
+  </status-classes>
+  <status-classes class="OrderDetail">
+    <stakeholder code="Vendor" name="Продавец продукции"/>
+  </status-classes>
+  <statuses class="Order" historical="false">
+    <stakeholder-link code="Vendor">
+      <status code="DRAFT" name="Описание статуса" initial="true">
+        <to status="FIXED"/>
+      </status>
+      <status code="FIXED" name="Описание статуса" initial="false"/>
+    </stakeholder-link>
+  </statuses>
+  <statuses class="OrderDetail" historical="false">
+    <stakeholder-link code="Vendor">
+      <status code="PACKAGED" name="Описание статуса" initial="false"/>
+      <status code="OPEN" name="Описание статуса" initial="true">
+        <to status="PACKAGED"/>
+      </status>
+    </stakeholder-link>
+  </statuses>
+</model>

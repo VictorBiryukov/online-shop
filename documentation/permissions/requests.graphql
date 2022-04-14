@@ -1,0 +1,134 @@
+## Customer ###############################################
+fragment CustomerAttributes on _E_Customer {
+    id
+    __typename
+    data {
+        name
+        address
+    }
+}
+
+query getCustomerInfo($cond: String!) {
+    searchCustomer(cond: $cond) {
+        elems {
+            ...CustomerAttributes
+        }
+    }
+}
+
+mutation addCustomerInfo($customerInput: _CreateCustomerInput!) {
+    packet {
+        updateOrCreateCustomer(input: $customerInput) {
+            returning {
+                ...CustomerAttributes
+            }
+        }
+    }
+}
+
+## GoodType ###############################################
+fragment GoodTypeAttributes on _E_GoodType {
+    id
+    __typename
+    name
+    descr
+    price
+}
+
+query searchGoodType {
+    searchGoodType {
+        elems {
+            ...GoodTypeAttributes
+        }
+    }
+}
+
+mutation addGoodTypeInfo($goodTypeInput: _CreateGoodTypeInput!) {
+    packet {
+        updateOrCreateGoodType(input: $goodTypeInput) {
+            returning {
+                ...GoodTypeAttributes
+            }
+        }
+    }
+}
+
+## Order & Detail #########################################
+fragment DetailAttributes on _E_Detail {
+    id
+    __typename
+    goodType {
+        entity {
+            ...GoodTypeAttributes
+        }
+    }
+}
+
+fragment OrderAttributes on _E_Order {
+    id
+    __typename
+    openOrderFlag
+    orderDate
+    comment
+    statusForCUSTOMER {
+        code
+    }
+    details {
+        elems {
+            ...DetailAttributes
+        }
+    }
+}
+
+query searchOrder($cond: String) {
+    searchOrder(cond: $cond, sort: {crit: "it.orderDate", order: DESC}) {
+        elems {
+            ...OrderAttributes
+        }
+    }
+}
+
+query searchAllOrder($cond: String) {
+    searchOrder(cond: $cond, sort: {crit: "it.customer.entityId", order: DESC}) {
+        elems {
+            customer {
+                entityId
+            }
+            ...OrderAttributes
+        }
+    }
+}
+
+mutation addOrderDetail($customerId: String!, $goodTypeId: String!) {
+    packet {
+        updateOrCreateOrder(
+            input: {openOrderFlag: $customerId, customer: {entityId: $customerId}}
+            exist: {byKey: openOrderFlag}
+        ) {
+            returning {
+                ...OrderAttributes
+            }
+        }
+        createDetail(
+            input: {order: "ref:updateOrCreateOrder", goodType: {entityId: $goodTypeId}}
+        ) {
+            ...DetailAttributes
+        }
+    }
+}
+
+mutation fixOrder($orderId: ID!) {
+    packet {
+        updateOrder(
+            input: {id: $orderId, openOrderFlag: null, statusForCUSTOMER: {code: "FIXED"}}
+        ) {
+            ...OrderAttributes
+        }
+    }
+}
+
+mutation deleteDetail($detailId: ID!) {
+    packet {
+        deleteDetail(id: $detailId)
+    }
+}

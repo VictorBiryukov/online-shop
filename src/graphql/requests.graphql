@@ -1,0 +1,155 @@
+## Address ################################################
+
+fragment AddressAttributes on _G_DeliveryAddress {
+	countryIso
+  regionIso
+  city
+  street
+  flatNumber
+}
+
+## Customer ###############################################
+
+fragment CustomerAttributes on _E_Customer {
+    id
+    __typename
+    data {
+        firstName
+        lastName
+    }
+  defaultDeliveryAddress{
+    ...AddressAttributes
+  }
+}
+
+query getCustomerInfo($cond: String!) {
+  searchCustomer(cond: $cond) {
+    elems {
+      ...CustomerAttributes
+    }
+  }
+}
+
+mutation addCustomerInfo($customerInput: _CreateCustomerInput!) {
+    packet {
+        updateOrCreateCustomer(input: $customerInput) {
+            returning {
+                ...CustomerAttributes
+            }
+        }
+    }
+}
+
+## GoodType ###############################################
+fragment GoodTypeAttributes on _E_GoodType {
+    id
+    __typename
+    name
+    descr
+    price
+  	vendor{
+      entity{
+        id
+        __typename
+        name
+      }
+    }
+}
+
+query searchGoodType {
+  searchGoodType {
+    elems {
+      ...GoodTypeAttributes
+    }
+  }
+}
+
+mutation addGoodTypeInfo($goodTypeInput: _CreateGoodTypeInput!) {
+    packet {
+        updateOrCreateGoodType(input: $goodTypeInput) {
+            returning {
+                ...GoodTypeAttributes
+            }
+        }
+    }
+}
+
+## Order & Detail #########################################
+fragment OrderDetailAttributes on _E_OrderDetail {
+    id
+    __typename
+    goodType {
+        entity {
+            ...GoodTypeAttributes
+        }
+    }
+}
+
+fragment OrderAttributes on _E_Order {
+    id
+    __typename
+    openOrderFlag
+    orderDate
+    comment
+    statusForVendor {
+        code
+    }
+    orderDetailList {
+        elems {
+            ...OrderDetailAttributes
+        }
+    }
+}
+
+query searchOrder($cond: String) {
+  searchOrder(cond: $cond, sort: {crit: "it.orderDate", order: DESC}) {
+    elems {
+      ...OrderAttributes
+    }
+  }
+}
+
+query searchAllOrder($cond: String) {
+  searchOrder(cond: $cond, sort: {crit: "it.customer.entityId", order: DESC}) {
+    elems {
+      customer {
+        entityId
+      }
+      ...OrderAttributes
+    }
+  }
+}
+
+mutation addOrderDetail($customerId: String!, $goodTypeId: String!, $deliveryAddress: _DeliveryAddressInput!) {
+    packet {
+        updateOrCreateOrder(
+            input: {openOrderFlag: $customerId, customer: {entityId: $customerId}, deliveryAddress: $deliveryAddress}
+            exist: {byKey: openOrderFlag}
+        ) {
+            returning {
+                ...OrderAttributes
+            }
+        }
+        createOrderDetail(
+            input: {order: "ref:updateOrCreateOrder", goodType: {entityId: $goodTypeId}}
+        ) {
+            ...OrderDetailAttributes
+        }
+    }
+}
+
+mutation fixOrder($orderId: ID!) {
+  packet {
+    updateOrder(
+      input: {id: $orderId, openOrderFlag: null, statusForVendor: {code: "FIXED"}}
+    ) {
+      ...OrderAttributes
+    }
+  }
+}
+
+mutation deleteOrderDetail($orderDetailId: ID!) {
+  packet {
+    deleteOrderDetail(id: $orderDetailId)
+  }
+}

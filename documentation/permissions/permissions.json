@@ -1,0 +1,178 @@
+[
+  {
+    "name": "addCustomerInfo",
+    "body": "mutation addCustomerInfo($customerInput: _CreateCustomerInput!) {\n  packet {\n    updateOrCreateCustomer(input: $customerInput) {\n      returning {\n        ...CustomerAttributes\n      }\n    }\n  }\n}\n    fragment CustomerAttributes on _E_Customer {\n  id\n  __typename\n  data {\n    name\n    address\n  }\n}",
+    "allowEmptyChecks": false,
+    "disableJwtVerification": false,
+    "checkSelects": [
+      {
+        "conditionValue": "${customerInput.id} == ${jwt:email}",
+        "orderValue": "0",
+        "typeName": "",
+        "description": "Only user can define his own personal data"
+      }
+    ],
+    "paramAdditions": [
+      {
+        "paramName": "customerInput",
+        "paramAddition": ""
+      }
+    ]
+  },
+  {
+    "name": "addGoodTypeInfo",
+    "body": "mutation addGoodTypeInfo($goodTypeInput: _CreateGoodTypeInput!) {\n  packet {\n    updateOrCreateGoodType(input: $goodTypeInput) {\n      returning {\n        ...GoodTypeAttributes\n      }\n    }\n  }\n}\n    fragment GoodTypeAttributes on _E_GoodType {\n  id\n  __typename\n  name\n  descr\n  price\n}",
+    "allowEmptyChecks": false,
+    "disableJwtVerification": false,
+    "checkSelects": [
+      {
+        "conditionValue": "'manager' $in ${jwt:realm_access.roles}",
+        "orderValue": "0",
+        "typeName": "",
+        "description": "Only manager can create/update good type info"
+      }
+    ],
+    "paramAdditions": [
+      {
+        "paramName": "goodTypeInput",
+        "paramAddition": ""
+      }
+    ]
+  },
+  {
+    "name": "addOrderDetail",
+    "body": "mutation addOrderDetail($customerId: String!, $goodTypeId: String!) {\n  packet {\n    updateOrCreateOrder(\n      input: {openOrderFlag: $customerId, customer: {entityId: $customerId}}\n      exist: {byKey: openOrderFlag}\n    ) {\n      returning {\n        ...OrderAttributes\n      }\n    }\n    createDetail(\n      input: {order: \"ref:updateOrCreateOrder\", goodType: {entityId: $goodTypeId}}\n    ) {\n      ...DetailAttributes\n    }\n  }\n}\n    fragment OrderAttributes on _E_Order {\n  id\n  __typename\n  openOrderFlag\n  orderDate\n  comment\n  statusForCUSTOMER {\n    code\n  }\n  details {\n    elems {\n      ...DetailAttributes\n    }\n  }\n}\n    fragment DetailAttributes on _E_Detail {\n  id\n  __typename\n  goodType {\n    entity {\n      ...GoodTypeAttributes\n    }\n  }\n}\n    fragment GoodTypeAttributes on _E_GoodType {\n  id\n  __typename\n  name\n  descr\n  price\n}\nfragment DetailAttributes on _E_Detail {\n  id\n  __typename\n  goodType {\n    entity {\n      ...GoodTypeAttributes\n    }\n  }\n}\n    fragment GoodTypeAttributes on _E_GoodType {\n  id\n  __typename\n  name\n  descr\n  price\n}",
+    "allowEmptyChecks": false,
+    "disableJwtVerification": false,
+    "checkSelects": [
+      {
+        "conditionValue": "${customerId} == ${jwt:email} && 'customer' $in ${jwt:realm_access.roles}",
+        "orderValue": "0",
+        "typeName": "",
+        "description": "Only  customer can add detail to his own order"
+      }
+    ],
+    "paramAdditions": [
+      {
+        "paramName": "customerId",
+        "paramAddition": ""
+      },
+      {
+        "paramName": "goodTypeId",
+        "paramAddition": ""
+      }
+    ]
+  },
+  {
+    "name": "deleteDetail",
+    "body": "mutation deleteDetail($detailId: ID!) {\n  packet {\n    deleteDetail(id: $detailId)\n  }\n}",
+    "allowEmptyChecks": false,
+    "disableJwtVerification": false,
+    "checkSelects": [
+      {
+        "conditionValue": "it.$id == ${detailId} && it.order.customer.entityId == ${jwt:email} && it.order.statusForCUSTOMER.code == 'DRAFT'",
+        "orderValue": "0",
+        "typeName": "Detail",
+        "description": "Only owner can delete detail of his order AND only when status of this order is DRAFT"
+      }
+    ],
+    "paramAdditions": [
+      {
+        "paramName": "detailId",
+        "paramAddition": ""
+      }
+    ]
+  },
+  {
+    "name": "fixOrder",
+    "body": "mutation fixOrder($orderId: ID!) {\n  packet {\n    updateOrder(\n      input: {id: $orderId, openOrderFlag: null, statusForCUSTOMER: {code: \"FIXED\"}}\n    ) {\n      ...OrderAttributes\n    }\n  }\n}\n    fragment OrderAttributes on _E_Order {\n  id\n  __typename\n  openOrderFlag\n  orderDate\n  comment\n  statusForCUSTOMER {\n    code\n  }\n  details {\n    elems {\n      ...DetailAttributes\n    }\n  }\n}\n    fragment DetailAttributes on _E_Detail {\n  id\n  __typename\n  goodType {\n    entity {\n      ...GoodTypeAttributes\n    }\n  }\n}\n    fragment GoodTypeAttributes on _E_GoodType {\n  id\n  __typename\n  name\n  descr\n  price\n}",
+    "allowEmptyChecks": false,
+    "disableJwtVerification": false,
+    "checkSelects": [
+      {
+        "conditionValue": "it.$id == ${orderId} && it.customer.entityId == ${jwt:email}",
+        "orderValue": "0",
+        "typeName": "Order",
+        "description": "Only owner can fix his own order"
+      }
+    ],
+    "paramAdditions": [
+      {
+        "paramName": "orderId",
+        "paramAddition": ""
+      }
+    ]
+  },
+  {
+    "name": "getCustomerInfo",
+    "body": "query getCustomerInfo($cond: String!) {\n  searchCustomer(cond: $cond) {\n    elems {\n      ...CustomerAttributes\n    }\n  }\n}\n    fragment CustomerAttributes on _E_Customer {\n  id\n  __typename\n  data {\n    name\n    address\n  }\n}",
+    "allowEmptyChecks": false,
+    "disableJwtVerification": false,
+    "checkSelects": [
+      {
+        "conditionValue": "'supervisor' $in ${jwt:realm_access.roles}",
+        "orderValue": "0",
+        "typeName": "",
+        "description": "Only supervisor can see customers personal data"
+      }
+    ],
+    "paramAdditions": [
+      {
+        "paramName": "cond",
+        "paramAddition": ""
+      }
+    ]
+  },
+  {
+    "name": "searchAllOrder",
+    "body": "query searchAllOrder($cond: String) {\n  searchOrder(cond: $cond, sort: {crit: \"it.customer.entityId\", order: DESC}) {\n    elems {\n      customer {\n        entityId\n      }\n      ...OrderAttributes\n    }\n  }\n}\n    fragment OrderAttributes on _E_Order {\n  id\n  __typename\n  openOrderFlag\n  orderDate\n  comment\n  statusForCUSTOMER {\n    code\n  }\n  details {\n    elems {\n      ...DetailAttributes\n    }\n  }\n}\n    fragment DetailAttributes on _E_Detail {\n  id\n  __typename\n  goodType {\n    entity {\n      ...GoodTypeAttributes\n    }\n  }\n}\n    fragment GoodTypeAttributes on _E_GoodType {\n  id\n  __typename\n  name\n  descr\n  price\n}",
+    "allowEmptyChecks": false,
+    "disableJwtVerification": false,
+    "checkSelects": [
+      {
+        "conditionValue": "'supervisor' $in ${jwt:realm_access.roles} || 'manager' $in ${jwt:realm_access.roles}",
+        "orderValue": "0",
+        "typeName": "",
+        "description": "Only manager or supervisor can see all orders"
+      }
+    ],
+    "paramAdditions": [
+      {
+        "paramName": "cond",
+        "paramAddition": "'supervisor' $in ${jwt:realm_access.roles} || ('manager' $in ${jwt:realm_access.roles} && it.statusForCUSTOMER.code == 'FIXED' )"
+      }
+    ]
+  },
+  {
+    "name": "searchGoodType",
+    "body": "query searchGoodType {\n  searchGoodType {\n    elems {\n      ...GoodTypeAttributes\n    }\n  }\n}\n    fragment GoodTypeAttributes on _E_GoodType {\n  id\n  __typename\n  name\n  descr\n  price\n}",
+    "allowEmptyChecks": true,
+    "disableJwtVerification": false,
+    "paramAdditions": [
+      {
+        "paramName": "",
+        "paramAddition": ""
+      }
+    ]
+  },
+  {
+    "name": "searchOrder",
+    "body": "query searchOrder($cond: String) {\n  searchOrder(cond: $cond, sort: {crit: \"it.orderDate\", order: DESC}) {\n    elems {\n      ...OrderAttributes\n    }\n  }\n}\n    fragment OrderAttributes on _E_Order {\n  id\n  __typename\n  openOrderFlag\n  orderDate\n  comment\n  statusForCUSTOMER {\n    code\n  }\n  details {\n    elems {\n      ...DetailAttributes\n    }\n  }\n}\n    fragment DetailAttributes on _E_Detail {\n  id\n  __typename\n  goodType {\n    entity {\n      ...GoodTypeAttributes\n    }\n  }\n}\n    fragment GoodTypeAttributes on _E_GoodType {\n  id\n  __typename\n  name\n  descr\n  price\n}",
+    "allowEmptyChecks": false,
+    "disableJwtVerification": true,
+    "checkSelects": [
+      {
+        "conditionValue": "'customer' $in ${jwt:realm_access.roles}",
+        "orderValue": "0",
+        "typeName": "",
+        "description": "Only customer can see his own orders"
+      }
+    ],
+    "paramAdditions": [
+      {
+        "paramName": "cond",
+        "paramAddition": "it.customer.entityId == ${jwt:email}"
+      }
+    ]
+  }
+]

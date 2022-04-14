@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model model-name="orders_example" version="0.0.1">
+  <layout>
+    <model/>
+    <classes>
+      <class name="Customer">
+        <property name="data" x="747" y="251"/>
+      </class>
+      <class name="Order">
+        <property name="openOrderFlag" x="305" y="177"/>
+        <property name="comment" x="305" y="237"/>
+        <property name="details" x="305" y="357"/>
+        <property name="orderDate" x="305" y="297"/>
+        <reference name="customer" x="305" y="117"/>
+      </class>
+      <class name="GoodType">
+        <property name="price" x="820" y="804"/>
+        <property name="name" x="820" y="624"/>
+        <property name="descr" x="820" y="684"/>
+        <property name="weight" x="820" y="744"/>
+      </class>
+      <class name="Detail">
+        <property name="order" x="305" y="654"/>
+        <reference name="goodType" x="305" y="714"/>
+      </class>
+      <class name="CustomerPersonalData">
+        <property name="address" x="1176" y="281"/>
+        <property name="name" x="1176" y="221"/>
+      </class>
+    </classes>
+    <statuses class="Order">
+      <stakeholder-link code="CUSTOMER">
+        <status code="DRAFT" x="-854" y="-178"/>
+        <status code="FIXED" x="-853" y="-36"/>
+      </stakeholder-link>
+    </statuses>
+  </layout>
+  <class name="Customer" strategy="JOINED" is-abstract="false" embeddable="false">
+    <id category="MANUAL"/>
+    <property name="data" type="CustomerPersonalData"/>
+  </class>
+  <class name="Order" strategy="JOINED" is-abstract="false" embeddable="false">
+    <id category="SNOWFLAKE"/>
+    <property name="openOrderFlag" type="STRING" length="254"/>
+    <property name="comment" type="TEXT"/>
+    <property name="details" type="Detail" collection="SET" mappedBy="order"/>
+    <property name="orderDate" type="OFFSETDATETIME" parent="false" length="3" default-value="now"/>
+    <reference name="customer" type="Customer"/>
+    <index unique="true">
+      <property name="openOrderFlag"/>
+    </index>
+  </class>
+  <class name="GoodType" strategy="JOINED" is-abstract="false" embeddable="false">
+    <id category="MANUAL"/>
+    <property name="price" type="BIGDECIMAL" length="38" scale="10"/>
+    <property name="name" type="STRING" length="254"/>
+    <property name="descr" type="STRING" length="4000" historical="false"/>
+    <property name="weight" type="BIGDECIMAL" length="38" scale="10"/>
+  </class>
+  <class name="Detail" strategy="JOINED" is-abstract="false" embeddable="false">
+    <property name="order" type="Order" parent="true"/>
+    <reference name="goodType" type="GoodType"/>
+  </class>
+  <class name="CustomerPersonalData" is-abstract="false" embeddable="true">
+    <property name="address" type="STRING" length="254"/>
+    <property name="name" type="STRING" length="254"/>
+  </class>
+  <status-classes class="Order">
+    <stakeholder code="CUSTOMER" name="Заказчик (покупатель)"/>
+  </status-classes>
+  <statuses class="Order" historical="false">
+    <stakeholder-link code="CUSTOMER">
+      <status code="DRAFT" name="Описание статуса" initial="true">
+        <to status="FIXED"/>
+      </status>
+      <status code="FIXED" name="Описание статуса" initial="false"/>
+    </stakeholder-link>
+  </statuses>
+</model>

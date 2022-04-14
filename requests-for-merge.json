@@ -1,0 +1,38 @@
+[
+  {
+    "name": "getCustomerInfo",
+    "body": "query getCustomerInfo($cond: String!) {\n  searchCustomer(cond: $cond) {\n    elems {\n      ...CustomerAttributes\n    }\n  }\n}\n    fragment CustomerAttributes on _E_Customer {\n  id\n  __typename\n  data {\n    firstName\n    lastName\n  }\n  defaultDeliveryAddress {\n    ...AddressAttributes\n  }\n}\n    fragment AddressAttributes on _G_DeliveryAddress {\n  countryIso\n  regionIso\n  city\n  street\n  flatNumber\n}"
+  },
+  {
+    "name": "addCustomerInfo",
+    "body": "mutation addCustomerInfo($customerInput: _CreateCustomerInput!) {\n  packet {\n    updateOrCreateCustomer(input: $customerInput) {\n      returning {\n        ...CustomerAttributes\n      }\n    }\n  }\n}\n    fragment CustomerAttributes on _E_Customer {\n  id\n  __typename\n  data {\n    firstName\n    lastName\n  }\n  defaultDeliveryAddress {\n    ...AddressAttributes\n  }\n}\n    fragment AddressAttributes on _G_DeliveryAddress {\n  countryIso\n  regionIso\n  city\n  street\n  flatNumber\n}"
+  },
+  {
+    "name": "searchGoodType",
+    "body": "query searchGoodType {\n  searchGoodType {\n    elems {\n      ...GoodTypeAttributes\n    }\n  }\n}\n    fragment GoodTypeAttributes on _E_GoodType {\n  id\n  __typename\n  name\n  descr\n  price\n  vendor {\n    entity {\n      id\n      __typename\n      name\n    }\n  }\n}"
+  },
+  {
+    "name": "addGoodTypeInfo",
+    "body": "mutation addGoodTypeInfo($goodTypeInput: _CreateGoodTypeInput!) {\n  packet {\n    updateOrCreateGoodType(input: $goodTypeInput) {\n      returning {\n        ...GoodTypeAttributes\n      }\n    }\n  }\n}\n    fragment GoodTypeAttributes on _E_GoodType {\n  id\n  __typename\n  name\n  descr\n  price\n  vendor {\n    entity {\n      id\n      __typename\n      name\n    }\n  }\n}"
+  },
+  {
+    "name": "searchOrder",
+    "body": "query searchOrder($cond: String) {\n  searchOrder(cond: $cond, sort: {crit: \"it.orderDate\", order: DESC}) {\n    elems {\n      ...OrderAttributes\n    }\n  }\n}\n    fragment OrderAttributes on _E_Order {\n  id\n  __typename\n  openOrderFlag\n  orderDate\n  comment\n  statusForVendor {\n    code\n  }\n  orderDetailList {\n    elems {\n      ...OrderDetailAttributes\n    }\n  }\n}\n    fragment OrderDetailAttributes on _E_OrderDetail {\n  id\n  __typename\n  goodType {\n    entity {\n      ...GoodTypeAttributes\n    }\n  }\n}\n    fragment GoodTypeAttributes on _E_GoodType {\n  id\n  __typename\n  name\n  descr\n  price\n  vendor {\n    entity {\n      id\n      __typename\n      name\n    }\n  }\n}"
+  },
+  {
+    "name": "searchAllOrder",
+    "body": "query searchAllOrder($cond: String) {\n  searchOrder(cond: $cond, sort: {crit: \"it.customer.entityId\", order: DESC}) {\n    elems {\n      customer {\n        entityId\n      }\n      ...OrderAttributes\n    }\n  }\n}\n    fragment OrderAttributes on _E_Order {\n  id\n  __typename\n  openOrderFlag\n  orderDate\n  comment\n  statusForVendor {\n    code\n  }\n  orderDetailList {\n    elems {\n      ...OrderDetailAttributes\n    }\n  }\n}\n    fragment OrderDetailAttributes on _E_OrderDetail {\n  id\n  __typename\n  goodType {\n    entity {\n      ...GoodTypeAttributes\n    }\n  }\n}\n    fragment GoodTypeAttributes on _E_GoodType {\n  id\n  __typename\n  name\n  descr\n  price\n  vendor {\n    entity {\n      id\n      __typename\n      name\n    }\n  }\n}"
+  },
+  {
+    "name": "addOrderDetail",
+    "body": "mutation addOrderDetail($customerId: String!, $goodTypeId: String!, $deliveryAddress: _DeliveryAddressInput!) {\n  packet {\n    updateOrCreateOrder(\n      input: {openOrderFlag: $customerId, customer: {entityId: $customerId}, deliveryAddress: $deliveryAddress}\n      exist: {byKey: openOrderFlag}\n    ) {\n      returning {\n        ...OrderAttributes\n      }\n    }\n    createOrderDetail(\n      input: {order: \"ref:updateOrCreateOrder\", goodType: {entityId: $goodTypeId}}\n    ) {\n      ...OrderDetailAttributes\n    }\n  }\n}\n    fragment OrderAttributes on _E_Order {\n  id\n  __typename\n  openOrderFlag\n  orderDate\n  comment\n  statusForVendor {\n    code\n  }\n  orderDetailList {\n    elems {\n      ...OrderDetailAttributes\n    }\n  }\n}\n    fragment OrderDetailAttributes on _E_OrderDetail {\n  id\n  __typename\n  goodType {\n    entity {\n      ...GoodTypeAttributes\n    }\n  }\n}\n    fragment GoodTypeAttributes on _E_GoodType {\n  id\n  __typename\n  name\n  descr\n  price\n  vendor {\n    entity {\n      id\n      __typename\n      name\n    }\n  }\n}\nfragment OrderDetailAttributes on _E_OrderDetail {\n  id\n  __typename\n  goodType {\n    entity {\n      ...GoodTypeAttributes\n    }\n  }\n}\n    fragment GoodTypeAttributes on _E_GoodType {\n  id\n  __typename\n  name\n  descr\n  price\n  vendor {\n    entity {\n      id\n      __typename\n      name\n    }\n  }\n}"
+  },
+  {
+    "name": "fixOrder",
+    "body": "mutation fixOrder($orderId: ID!) {\n  packet {\n    updateOrder(\n      input: {id: $orderId, openOrderFlag: null, statusForVendor: {code: \"FIXED\"}}\n    ) {\n      ...OrderAttributes\n    }\n  }\n}\n    fragment OrderAttributes on _E_Order {\n  id\n  __typename\n  openOrderFlag\n  orderDate\n  comment\n  statusForVendor {\n    code\n  }\n  orderDetailList {\n    elems {\n      ...OrderDetailAttributes\n    }\n  }\n}\n    fragment OrderDetailAttributes on _E_OrderDetail {\n  id\n  __typename\n  goodType {\n    entity {\n      ...GoodTypeAttributes\n    }\n  }\n}\n    fragment GoodTypeAttributes on _E_GoodType {\n  id\n  __typename\n  name\n  descr\n  price\n  vendor {\n    entity {\n      id\n      __typename\n      name\n    }\n  }\n}"
+  },
+  {
+    "name": "deleteOrderDetail",
+    "body": "mutation deleteOrderDetail($orderDetailId: ID!) {\n  packet {\n    deleteOrderDetail(id: $orderDetailId)\n  }\n}"
+  }
+]

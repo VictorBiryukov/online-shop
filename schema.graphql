@@ -1,0 +1,1836 @@
+schema {
+  query: _Query
+  mutation: _Mutation
+}
+
+directive @mergeReqSpec(cond: String) on INLINE_FRAGMENT
+
+# java.math.BigDecimal
+scalar BigDecimal
+
+# Byte as Int
+scalar Byte
+
+# Char as Character
+scalar Char
+
+interface Customer {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  type: String!
+  defaultDeliveryAddress: _G_DeliveryAddress!
+  data: _G_CustomerPersonalData!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+interface GoodType {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  descr: String
+  price: BigDecimal
+  name: String
+  type: String!
+  vendor: _G_VendorReference!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+# Long type
+scalar Long
+
+interface Order {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  openOrderFlag: String
+  orderDate: _OffsetDateTime
+  comment: String
+  statusReasonForVendor: String
+  type: String!
+  statusForVendor(alias: String): Status
+  orderDetailList(
+    elemAlias: String
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_OrderDetail!
+  deliveryAddress: _G_DeliveryAddress!
+  customer: _G_CustomerReference!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+interface OrderDetail {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  type: String!
+  order(alias: String): Order!
+  aggregateRoot(alias: String): Order
+  goodType: _G_GoodTypeReference!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+interface RootDictionary {
+  id: ID!
+  type: String!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+# Short as Int
+scalar Short
+
+interface Stakeholder {
+  id: ID!
+  chgCnt: Long
+  code: String
+  isDeleted: Boolean
+  lastChangeDate: _DateTime
+  name: String
+  offFlag: Byte
+  ownerId: String
+  partitionId: Int
+  recModelVersion: String
+  aggregateRoot(alias: String): RootDictionary
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+interface Status {
+  id: ID!
+  chgCnt: Long
+  code: String
+  description: String
+  initial: Boolean
+  isDeleted: Boolean!
+  lastChangeDate: _DateTime
+  name: String
+  offFlag: Byte
+  ownerId: String
+  partitionId: Int
+  recModelVersion: String
+  statusType: String
+  stakeholder(alias: String): Stakeholder
+  aggregateRoot(alias: String): RootDictionary
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+interface StatusGraph {
+  id: ID!
+  chgCnt: Long
+  code: String
+  isDeleted: Boolean
+  lastChangeDate: _DateTime
+  name: String
+  offFlag: Byte
+  ownerId: String
+  partitionId: Int
+  recModelVersion: String
+  statusFrom(alias: String): Status
+  statusTo(alias: String): Status
+  aggregateRoot(alias: String): RootDictionary
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+interface SysAdminSettings {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  key: String
+  value: String
+  rootSecurity(alias: String): SysRootSecurity!
+  aggregateRoot(alias: String): SysRootSecurity
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+interface SysCheckSelect {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  conditionValue: String
+  description: String
+  orderValue: Int
+  typeName: String
+  operation(alias: String): SysOperation!
+  aggregateRoot(alias: String): SysRootSecurity
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+interface SysOperation {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  allowEmptyChecks: Boolean
+  body: String
+  disableJwtVerification: Boolean
+  hashValue: String
+  rootSecurity(alias: String): SysRootSecurity!
+  aggregateRoot(alias: String): SysRootSecurity
+  checkSelects(
+    elemAlias: String
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_SysCheckSelect!
+  paramAdditions(
+    elemAlias: String
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_SysParamAddition!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+interface SysParamAddition {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  paramAddition: String
+  paramName: String
+  operation(alias: String): SysOperation!
+  aggregateRoot(alias: String): SysRootSecurity
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+interface SysRootSecurity {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  type: String!
+  adminSettings(
+    elemAlias: String
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_SysAdminSettings!
+  operations(
+    elemAlias: String
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_SysOperation!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+interface Vendor {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  name: String
+  type: String!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+scalar _ByteArray
+
+input _CompareGoodTypeInput {
+  descr: String
+  name: String
+}
+
+input _CompareOrderInput {
+  openOrderFlag: String
+  orderDate: _OffsetDateTime
+}
+
+input _CompareVendorInput {
+  name: String
+}
+
+input _CreateCustomerInput {
+  data: _CustomerPersonalDataInput
+  defaultDeliveryAddress: _DeliveryAddressInput
+  id: ID!
+}
+
+input _CreateGoodTypeInput {
+  descr: String
+  price: BigDecimal
+  vendor: _SingleReferenceInput
+  name: String
+  id: ID!
+}
+
+input _CreateOrderDetailInput {
+  goodType: _SingleReferenceInput
+  order: ID!
+}
+
+input _CreateOrderInput {
+  deliveryAddress: _DeliveryAddressInput
+  statusForVendor: _StatusInput
+  openOrderFlag: String
+  comment: String
+  orderDate: _OffsetDateTime
+  customer: _SingleReferenceInput
+}
+
+input _CreateVendorInput {
+  name: String
+  id: ID!
+}
+
+input _CustomerPersonalDataInput {
+  lastName: String
+  firstName: String
+}
+
+scalar _Date
+
+scalar _DateTime
+
+input _DeliveryAddressInput {
+  city: String
+  flatNumber: String
+  countryIso: String
+  street: String
+  regionIso: String
+}
+
+type _EC_Customer {
+  elems: [Customer!]!
+  count: Int!
+}
+
+type _EC_GoodType {
+  elems: [GoodType!]!
+  count: Int!
+}
+
+type _EC_Order {
+  elems: [Order!]!
+  count: Int!
+}
+
+type _EC_OrderDetail {
+  elems: [OrderDetail!]!
+  count: Int!
+}
+
+type _EC_RootDictionary {
+  elems: [RootDictionary!]!
+  count: Int!
+}
+
+type _EC_Stakeholder {
+  elems: [Stakeholder!]!
+  count: Int!
+}
+
+type _EC_Status {
+  elems: [Status!]!
+  count: Int!
+}
+
+type _EC_StatusGraph {
+  elems: [StatusGraph!]!
+  count: Int!
+}
+
+type _EC_SysAdminSettings {
+  elems: [SysAdminSettings!]!
+  count: Int!
+}
+
+type _EC_SysCheckSelect {
+  elems: [SysCheckSelect!]!
+  count: Int!
+}
+
+type _EC_SysOperation {
+  elems: [SysOperation!]!
+  count: Int!
+}
+
+type _EC_SysParamAddition {
+  elems: [SysParamAddition!]!
+  count: Int!
+}
+
+type _EC_SysRootSecurity {
+  elems: [SysRootSecurity!]!
+  count: Int!
+}
+
+type _EC_Vendor {
+  elems: [Vendor!]!
+  count: Int!
+}
+
+type _E_Customer implements _Entity & Customer {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  type: String!
+  defaultDeliveryAddress: _G_DeliveryAddress!
+  data: _G_CustomerPersonalData!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _E_GoodType implements _Entity & GoodType {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  descr: String
+  price: BigDecimal
+  name: String
+  type: String!
+  vendor: _G_VendorReference!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _E_Order implements _Entity & Order {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  openOrderFlag: String
+  orderDate: _OffsetDateTime
+  comment: String
+  statusReasonForVendor: String
+  type: String!
+  statusForVendor(alias: String): Status
+  orderDetailList(
+    elemAlias: String
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_OrderDetail!
+  deliveryAddress: _G_DeliveryAddress!
+  customer: _G_CustomerReference!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _E_OrderDetail implements _Entity & OrderDetail {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  type: String!
+  order(alias: String): Order!
+  aggregateRoot(alias: String): Order
+  goodType: _G_GoodTypeReference!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _E_RootDictionary implements _Entity & RootDictionary {
+  id: ID!
+  type: String!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _E_Stakeholder implements _Entity & Stakeholder {
+  id: ID!
+  chgCnt: Long
+  code: String
+  isDeleted: Boolean
+  lastChangeDate: _DateTime
+  name: String
+  offFlag: Byte
+  ownerId: String
+  partitionId: Int
+  recModelVersion: String
+  aggregateRoot(alias: String): RootDictionary
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _E_Status implements _Entity & Status {
+  id: ID!
+  chgCnt: Long
+  code: String
+  description: String
+  initial: Boolean
+  isDeleted: Boolean!
+  lastChangeDate: _DateTime
+  name: String
+  offFlag: Byte
+  ownerId: String
+  partitionId: Int
+  recModelVersion: String
+  statusType: String
+  stakeholder(alias: String): Stakeholder
+  aggregateRoot(alias: String): RootDictionary
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _E_StatusGraph implements _Entity & StatusGraph {
+  id: ID!
+  chgCnt: Long
+  code: String
+  isDeleted: Boolean
+  lastChangeDate: _DateTime
+  name: String
+  offFlag: Byte
+  ownerId: String
+  partitionId: Int
+  recModelVersion: String
+  statusFrom(alias: String): Status
+  statusTo(alias: String): Status
+  aggregateRoot(alias: String): RootDictionary
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _E_SysAdminSettings implements _Entity & SysAdminSettings {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  key: String
+  value: String
+  rootSecurity(alias: String): SysRootSecurity!
+  aggregateRoot(alias: String): SysRootSecurity
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _E_SysCheckSelect implements _Entity & SysCheckSelect {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  conditionValue: String
+  description: String
+  orderValue: Int
+  typeName: String
+  operation(alias: String): SysOperation!
+  aggregateRoot(alias: String): SysRootSecurity
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _E_SysOperation implements _Entity & SysOperation {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  allowEmptyChecks: Boolean
+  body: String
+  disableJwtVerification: Boolean
+  hashValue: String
+  rootSecurity(alias: String): SysRootSecurity!
+  aggregateRoot(alias: String): SysRootSecurity
+  checkSelects(
+    elemAlias: String
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_SysCheckSelect!
+  paramAdditions(
+    elemAlias: String
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_SysParamAddition!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _E_SysParamAddition implements _Entity & SysParamAddition {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  paramAddition: String
+  paramName: String
+  operation(alias: String): SysOperation!
+  aggregateRoot(alias: String): SysRootSecurity
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _E_SysRootSecurity implements _Entity & SysRootSecurity {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  type: String!
+  adminSettings(
+    elemAlias: String
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_SysAdminSettings!
+  operations(
+    elemAlias: String
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_SysOperation!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _E_Vendor implements _Entity & Vendor {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  name: String
+  type: String!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+interface _Entity {
+  id: ID!
+}
+
+input _ExistOrderInput {
+  byKey: _KeyOrder!
+}
+
+scalar _Float4
+
+type _G_CustomerPersonalData {
+  lastName: String
+  firstName: String
+}
+
+type _G_CustomerReference {
+  entityId: String
+  entity: Customer
+}
+
+type _G_DeliveryAddress {
+  city: String
+  flatNumber: String
+  countryIso: String
+  street: String
+  regionIso: String
+}
+
+type _G_GoodTypeReference {
+  entityId: String
+  entity: GoodType
+}
+
+type _G_VendorReference {
+  entityId: String
+  entity: Vendor
+}
+
+input _IncBigDecimalValueInput {
+  value: BigDecimal!
+}
+
+input _IncGoodTypeInput {
+  price: _IncBigDecimalValueInput
+}
+
+enum _KeyOrder {
+  # openOrderFlag
+  openOrderFlag
+}
+
+type _MergedEntitiesCollection {
+  elems: [_Entity!]!
+  count: Int!
+}
+
+type _Mutation {
+  packet(aggregateVersion: Long, idempotencePacketId: String): _Packet
+}
+
+scalar _OffsetDateTime
+
+type _Packet {
+  createOrder(input: _CreateOrderInput!): Order
+  updateOrCreateOrder(
+    input: _CreateOrderInput!
+    exist: _ExistOrderInput!
+  ): _UpdateOrCreateOrderResponse
+  updateOrder(input: _UpdateOrderInput!, compare: _CompareOrderInput): Order
+  getOrder(id: ID!): Order
+  deleteOrder(id: ID!, compare: _CompareOrderInput): String
+  createOrderDetail(input: _CreateOrderDetailInput!): OrderDetail
+  updateOrderDetail(input: _UpdateOrderDetailInput!): OrderDetail
+  getOrderDetail(id: ID!): OrderDetail
+  deleteOrderDetail(id: ID!): String
+  createCustomer(input: _CreateCustomerInput!): Customer
+  updateOrCreateCustomer(
+    input: _CreateCustomerInput!
+  ): _UpdateOrCreateCustomerResponse
+  updateCustomer(input: _UpdateCustomerInput!): Customer
+  getCustomer(id: ID!): Customer
+  deleteCustomer(id: ID!): String
+  createVendor(input: _CreateVendorInput!): Vendor
+  updateOrCreateVendor(
+    input: _CreateVendorInput!
+  ): _UpdateOrCreateVendorResponse
+  updateVendor(input: _UpdateVendorInput!, compare: _CompareVendorInput): Vendor
+  getVendor(id: ID!): Vendor
+  deleteVendor(id: ID!, compare: _CompareVendorInput): String
+  createGoodType(input: _CreateGoodTypeInput!): GoodType
+  updateOrCreateGoodType(
+    input: _CreateGoodTypeInput!
+  ): _UpdateOrCreateGoodTypeResponse
+  updateGoodType(
+    input: _UpdateGoodTypeInput!
+    compare: _CompareGoodTypeInput
+    inc: _IncGoodTypeInput
+  ): GoodType
+  getGoodType(id: ID!): GoodType
+  deleteGoodType(id: ID!, compare: _CompareGoodTypeInput): String
+  aggregateVersion: Long
+  isIdempotenceResponse: Boolean
+}
+
+type _Query {
+  merge(
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _MergedEntitiesCollection!
+  resolveReferences(referenceType: String!, ids: [ID!]!): [_Reference!]!
+  searchCustomer(
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_Customer!
+  searchVendor(
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_Vendor!
+  searchOrder(
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_Order!
+  searchOrderDetail(
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_OrderDetail!
+  searchGoodType(
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_GoodType!
+  searchStakeholder(
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_Stakeholder!
+  searchStatus(
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_Status!
+  searchStatusGraph(
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_StatusGraph!
+  searchRootDictionary(
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_RootDictionary!
+  searchSysRootSecurity(
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_SysRootSecurity!
+  searchSysAdminSettings(
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_SysAdminSettings!
+  searchSysOperation(
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_SysOperation!
+  searchSysCheckSelect(
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_SysCheckSelect!
+  searchSysParamAddition(
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_SysParamAddition!
+  selectionByCustomer(
+    cond: String
+    group: [String!]
+    groupCond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+    distinct: Boolean
+  ): _SEC_Customer!
+  selectionByVendor(
+    cond: String
+    group: [String!]
+    groupCond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+    distinct: Boolean
+  ): _SEC_Vendor!
+  selectionByOrder(
+    cond: String
+    group: [String!]
+    groupCond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+    distinct: Boolean
+  ): _SEC_Order!
+  selectionByOrderDetail(
+    cond: String
+    group: [String!]
+    groupCond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+    distinct: Boolean
+  ): _SEC_OrderDetail!
+  selectionByGoodType(
+    cond: String
+    group: [String!]
+    groupCond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+    distinct: Boolean
+  ): _SEC_GoodType!
+  selectionByStakeholder(
+    cond: String
+    group: [String!]
+    groupCond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+    distinct: Boolean
+  ): _SEC_Stakeholder!
+  selectionByStatus(
+    cond: String
+    group: [String!]
+    groupCond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+    distinct: Boolean
+  ): _SEC_Status!
+  selectionByStatusGraph(
+    cond: String
+    group: [String!]
+    groupCond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+    distinct: Boolean
+  ): _SEC_StatusGraph!
+  selectionByRootDictionary(
+    cond: String
+    group: [String!]
+    groupCond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+    distinct: Boolean
+  ): _SEC_RootDictionary!
+  selectionBySysRootSecurity(
+    cond: String
+    group: [String!]
+    groupCond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+    distinct: Boolean
+  ): _SEC_SysRootSecurity!
+  selectionBySysAdminSettings(
+    cond: String
+    group: [String!]
+    groupCond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+    distinct: Boolean
+  ): _SEC_SysAdminSettings!
+  selectionBySysOperation(
+    cond: String
+    group: [String!]
+    groupCond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+    distinct: Boolean
+  ): _SEC_SysOperation!
+  selectionBySysCheckSelect(
+    cond: String
+    group: [String!]
+    groupCond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+    distinct: Boolean
+  ): _SEC_SysCheckSelect!
+  selectionBySysParamAddition(
+    cond: String
+    group: [String!]
+    groupCond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+    distinct: Boolean
+  ): _SEC_SysParamAddition!
+}
+
+type _R_Customer implements _Reference {
+  entityId: String
+  entity: Customer
+}
+
+type _R_GoodType implements _Reference {
+  entityId: String
+  entity: GoodType
+}
+
+type _R_Order implements _Reference {
+  entityId: String
+  entity: Order
+}
+
+type _R_OrderDetail implements _Reference {
+  entityId: String
+  entity: OrderDetail
+}
+
+type _R_RootDictionary implements _Reference {
+  entityId: String
+  entity: RootDictionary
+}
+
+type _R_Stakeholder implements _Reference {
+  entityId: String
+  entity: Stakeholder
+}
+
+type _R_Status implements _Reference {
+  entityId: String
+  entity: Status
+}
+
+type _R_StatusGraph implements _Reference {
+  entityId: String
+  entity: StatusGraph
+}
+
+type _R_SysAdminSettings implements _Reference {
+  entityId: String
+  entity: SysAdminSettings
+}
+
+type _R_SysCheckSelect implements _Reference {
+  entityId: String
+  entity: SysCheckSelect
+}
+
+type _R_SysOperation implements _Reference {
+  entityId: String
+  entity: SysOperation
+}
+
+type _R_SysParamAddition implements _Reference {
+  entityId: String
+  entity: SysParamAddition
+}
+
+type _R_SysRootSecurity implements _Reference {
+  entityId: String
+  entity: SysRootSecurity
+}
+
+type _R_Vendor implements _Reference {
+  entityId: String
+  entity: Vendor
+}
+
+interface _Reference {
+  entityId: String
+}
+
+type _SEC_Customer {
+  elems: [_SE_Customer!]!
+  count: Int!
+}
+
+type _SEC_GoodType {
+  elems: [_SE_GoodType!]!
+  count: Int!
+}
+
+type _SEC_Order {
+  elems: [_SE_Order!]!
+  count: Int!
+}
+
+type _SEC_OrderDetail {
+  elems: [_SE_OrderDetail!]!
+  count: Int!
+}
+
+type _SEC_RootDictionary {
+  elems: [_SE_RootDictionary!]!
+  count: Int!
+}
+
+type _SEC_Stakeholder {
+  elems: [_SE_Stakeholder!]!
+  count: Int!
+}
+
+type _SEC_Status {
+  elems: [_SE_Status!]!
+  count: Int!
+}
+
+type _SEC_StatusGraph {
+  elems: [_SE_StatusGraph!]!
+  count: Int!
+}
+
+type _SEC_SysAdminSettings {
+  elems: [_SE_SysAdminSettings!]!
+  count: Int!
+}
+
+type _SEC_SysCheckSelect {
+  elems: [_SE_SysCheckSelect!]!
+  count: Int!
+}
+
+type _SEC_SysOperation {
+  elems: [_SE_SysOperation!]!
+  count: Int!
+}
+
+type _SEC_SysParamAddition {
+  elems: [_SE_SysParamAddition!]!
+  count: Int!
+}
+
+type _SEC_SysRootSecurity {
+  elems: [_SE_SysRootSecurity!]!
+  count: Int!
+}
+
+type _SEC_Vendor {
+  elems: [_SE_Vendor!]!
+  count: Int!
+}
+
+type _SE_Customer {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  type: String!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _SE_GoodType {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  descr: String
+  price: BigDecimal
+  name: String
+  type: String!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _SE_Order {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  openOrderFlag: String
+  orderDate: _OffsetDateTime
+  comment: String
+  statusReasonForVendor: String
+  type: String!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _SE_OrderDetail {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  type: String!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _SE_RootDictionary {
+  id: ID!
+  aggVersion: Long!
+  type: String!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _SE_Stakeholder {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  code: String
+  isDeleted: Boolean
+  lastChangeDate: _DateTime
+  name: String
+  offFlag: Byte
+  ownerId: String
+  partitionId: Int
+  recModelVersion: String
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _SE_Status {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  code: String
+  description: String
+  initial: Boolean
+  isDeleted: Boolean!
+  lastChangeDate: _DateTime
+  name: String
+  offFlag: Byte
+  ownerId: String
+  partitionId: Int
+  recModelVersion: String
+  statusType: String
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _SE_StatusGraph {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  code: String
+  isDeleted: Boolean
+  lastChangeDate: _DateTime
+  name: String
+  offFlag: Byte
+  ownerId: String
+  partitionId: Int
+  recModelVersion: String
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _SE_SysAdminSettings {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  key: String
+  value: String
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _SE_SysCheckSelect {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  conditionValue: String
+  description: String
+  orderValue: Int
+  typeName: String
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _SE_SysOperation {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  allowEmptyChecks: Boolean
+  body: String
+  disableJwtVerification: Boolean
+  hashValue: String
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _SE_SysParamAddition {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  paramAddition: String
+  paramName: String
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _SE_SysRootSecurity {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  type: String!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _SE_Vendor {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  name: String
+  type: String!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+input _SingleReferenceInput {
+  entityId: String!
+}
+
+input _SortCriterionSpecification {
+  crit: String!
+  order: _SortOrder! = ASC
+  nullsLast: Boolean
+}
+
+enum _SortOrder {
+  ASC
+  DESC
+}
+
+input _StatusInput {
+  code: String!
+  reason: String
+}
+
+input _UpdateCustomerInput {
+  data: _CustomerPersonalDataInput
+  defaultDeliveryAddress: _DeliveryAddressInput
+  id: ID!
+}
+
+input _UpdateGoodTypeInput {
+  descr: String
+  price: BigDecimal
+  vendor: _SingleReferenceInput
+  name: String
+  id: ID!
+}
+
+type _UpdateOrCreateCustomerResponse {
+  created: Boolean
+  returning: Customer
+}
+
+type _UpdateOrCreateGoodTypeResponse {
+  created: Boolean
+  returning: GoodType
+}
+
+type _UpdateOrCreateOrderResponse {
+  created: Boolean
+  returning: Order
+}
+
+type _UpdateOrCreateVendorResponse {
+  created: Boolean
+  returning: Vendor
+}
+
+input _UpdateOrderDetailInput {
+  goodType: _SingleReferenceInput
+  order: ID
+  id: ID!
+}
+
+input _UpdateOrderInput {
+  deliveryAddress: _DeliveryAddressInput
+  statusForVendor: _StatusInput
+  openOrderFlag: String
+  comment: String
+  orderDate: _OffsetDateTime
+  customer: _SingleReferenceInput
+  id: ID!
+}
+
+input _UpdateVendorInput {
+  name: String
+  id: ID!
+}

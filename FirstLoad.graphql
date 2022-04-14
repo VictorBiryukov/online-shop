@@ -1,0 +1,69 @@
+mutation initVendorsAndGoodsAndCustomers {
+  v1: packet(idempotencePacketId: "SberDevices") {
+    createVendor(input: { id: "SberDevices", name: "SberDevices" }) {
+      id
+    }
+  }
+
+  v2: packet(idempotencePacketId: "SberTech") {
+    createVendor(input: { id: "SberTech", name: "SberTech" }) {
+      id
+    }
+  }
+
+  gt1: packet(idempotencePacketId: "Sber-Rosetka") {
+    createGoodType(
+      input: {
+        id: "SberDevice-Rosetka"
+        name: "Розетка Sber"
+        descr: "Розетка Sber — одна из самых компактных розеток на рынке. Она поместится там, куда не подошли розетки от других производителей. Ещё розетка заземлена и у неё есть защитные шторки — они тугие и открываются, только если нажать на обе одновременно. Ребёнку будет сложно вставить гвоздь или спицу в розетку."
+        price: "30"
+        vendor: { entityId: "SberDevices" }
+      }
+    ) {
+      id
+    }
+  }
+
+  gt2: packet(idempotencePacketId: "Sber-Lampa") {
+    createGoodType(
+      input: {
+        id: "SberDevice-Lampa"
+        name: "Лампа Sber"
+        descr: "Умная лампа Sber не мерцает даже на минимальной яркости — ваши глаза не устанут. А ещё она помогает экономить: потребляет в 9–10 раз меньше электричества, чем сопоставимые по яркости лампы накаливания, и служит гораздо дольше."
+        price: "20"
+        vendor: { entityId: "SberDevices" }
+      }
+    ) {
+      id
+    }
+  }
+
+  gt3: packet(idempotencePacketId: "DataSpace") {
+    createGoodType(
+      input: {
+        id: "SberTech-DataSpace"
+        name: "Platform V DataSpace"
+        descr: "Platform V DataSpace — это облачный сервис, позволяющий значительно упростить и ускорить процесс разработки приложений в части задач хранения и управления данными вашего приложения. Архитектурно сервис представляет собой реализацию концепций Data-as-a-Service и Backend-as-a-Service."
+        price: "2000"
+        vendor: { entityId: "SberTech" }
+      }
+    ) {
+      id
+    }
+  }
+  
+  gt4: packet(idempotencePacketId: "Functions") {
+    createGoodType(
+      input: {
+        id: "SberTech-Functions"
+        name: "Platform V Functions"
+        descr: "Продукт Platform V Functions — FaaS (Functions as a Service) решение Platform V, позволяющее создавать безопасные бессерверные приложения на основных современных языках программирования: Java, JavaScript, Python. Среда исполнения создается на основе open-source компонентов, также предоставляются базовые реализации функций с готовой интеграцией с другими сервисами Platform V."
+        price: "1000"
+        vendor: { entityId: "SberTech" }
+      }
+    ) {
+      id
+    }
+  }
+}
