@@ -64,6 +64,46 @@
     ]
   },
   {
+    "name": "createPckg",
+    "body": "mutation createPckg($vendorId: ID!, $serialNumber: String!, $deliveryAddress: _DeliveryAddressInput!, $orderDetailId: ID!, $orderDetailRef: String!, $orderRef: String!) {\n  p1: packet {\n    createPckg(\n      input: {vendor: $vendorId, serialNumber: $serialNumber, deliveryAddress: $deliveryAddress, orderDetail: {rootEntityId: $orderRef, entityId: $orderDetailRef}}\n    ) {\n      id\n    }\n  }\n  p2: packet {\n    updateOrderDetail(\n      input: {id: $orderDetailId, statusForVendor: {code: \"PACKAGED\"}}\n    ) {\n      id\n    }\n  }\n}",
+    "allowEmptyChecks": false,
+    "disableJwtVerification": false,
+    "checkSelects": [
+      {
+        "conditionValue": "it.$id == ${orderDetailId} && it.statusForVendor.code == 'OPEN' && it.order.statusForVendor.code == 'FIXED' && it.goodType.entity.vendor.entityId == ${jwt:vendor_id}",
+        "orderValue": "0",
+        "typeName": "OrderDetail",
+        "description": "Vendor can create packages only for OPEN order details on his goods only for FIXED orders"
+      }
+    ],
+    "paramAdditions": [
+      {
+        "paramName": "vendorId",
+        "paramAddition": ""
+      },
+      {
+        "paramName": "serialNumber",
+        "paramAddition": ""
+      },
+      {
+        "paramName": "deliveryAddress",
+        "paramAddition": ""
+      },
+      {
+        "paramName": "orderDetailId",
+        "paramAddition": ""
+      },
+      {
+        "paramName": "orderDetailRef",
+        "paramAddition": ""
+      },
+      {
+        "paramName": "orderRef",
+        "paramAddition": ""
+      }
+    ]
+  },
+  {
     "name": "deleteOrderDetail",
     "body": "mutation deleteOrderDetail($orderDetailId: ID!) {\n  packet {\n    deleteOrderDetail(id: $orderDetailId)\n  }\n}",
     "allowEmptyChecks": false,
@@ -172,6 +212,26 @@
       {
         "paramName": "cond",
         "paramAddition": "it.customer.entityId == ${jwt:email}"
+      }
+    ]
+  },
+  {
+    "name": "searchOrderDetailForVendor",
+    "body": "query searchOrderDetailForVendor($cond: String) {\n  searchOrderDetail(cond: $cond) {\n    elems {\n      ...OrderDetailForVendorAttributes\n    }\n  }\n}\n    fragment OrderDetailForVendorAttributes on _E_OrderDetail {\n  id\n  __typename\n  statusForVendor {\n    code\n  }\n  order {\n    id\n    deliveryAddress {\n      ...AddressAttributes\n    }\n  }\n  goodType {\n    entity {\n      id\n      __typename\n      name\n      vendor {\n        entityId\n      }\n    }\n  }\n}\n    fragment AddressAttributes on _G_DeliveryAddress {\n  countryIso\n  regionIso\n  city\n  street\n  flatNumber\n}",
+    "allowEmptyChecks": false,
+    "disableJwtVerification": false,
+    "checkSelects": [
+      {
+        "conditionValue": "'vendor' $in ${jwt:realm_access.roles}",
+        "orderValue": "0",
+        "typeName": "",
+        "description": ""
+      }
+    ],
+    "paramAdditions": [
+      {
+        "paramName": "cond",
+        "paramAddition": "it.order.statusForVendor.code == 'FIXED' && it.goodType.entity.vendor.entityId == ${jwt:vendor_id} && it.statusForVendor.code == 'OPEN'"
       }
     ]
   }

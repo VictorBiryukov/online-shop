@@ -153,3 +153,72 @@ mutation deleteOrderDetail($orderDetailId: ID!) {
     deleteOrderDetail(id: $orderDetailId)
   }
 }
+
+# Vendor ###################
+
+fragment AddressAttributes on _G_DeliveryAddress {
+	countryIso
+  regionIso
+  city
+  street
+  flatNumber
+}
+
+fragment OrderDetailForVendorAttributes on _E_OrderDetail {
+  id
+  __typename
+  statusForVendor{
+    code
+  }
+  order{
+    id
+    deliveryAddress{
+      ...AddressAttributes
+    }
+  }
+  goodType{
+    entity{
+      id
+      __typename
+      name
+      vendor{
+        entityId
+      }
+    }
+  }
+}
+
+query searchOrderDetailForVendor($cond: String) {
+  searchOrderDetail(cond:$cond){
+    elems {
+      ...OrderDetailForVendorAttributes
+    }
+  }
+}
+
+mutation createPckg($vendorId: ID!, $serialNumber:String!, $deliveryAddress: _DeliveryAddressInput!, $orderDetailId: ID!, $orderDetailRef:String!, $orderRef: String!){
+  p1:packet{
+    createPckg(input:{
+      vendor:$vendorId
+      serialNumber: $serialNumber
+      deliveryAddress: $deliveryAddress
+      orderDetail:{
+        rootEntityId: $orderRef
+        entityId:$orderDetailRef
+      }
+    }){
+      id
+    }
+  }
+  
+  p2:packet{
+    updateOrderDetail(input:{
+      id: $orderDetailId
+      statusForVendor:{
+        code: "PACKAGED"
+      }
+    }){
+      id
+    }
+  }
+}

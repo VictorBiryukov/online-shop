@@ -9,6 +9,8 @@ import { GoodTypeList } from './GoodTypeList'
 import { OrderList } from './OrderList'
 import { AllOrderList } from './AllOrderList'
 
+import {OrderDetailForVendorList} from './OrderDetailForVendorList'
+
 
 const { TabPane } = Tabs
 const { Header, Content } = Layout
@@ -152,6 +154,9 @@ export const AppTabs: FC = () => {
                     </TabPane>
                     <TabPane key="all_orders" tab="All orders">
                         <AllOrderList></AllOrderList>
+                    </TabPane>
+                    <TabPane key="orders_detail_for_vendor" tab="Orders details for vendor">
+                        <OrderDetailForVendorList></OrderDetailForVendorList>
                     </TabPane>
                 </Tabs>
             </Content>

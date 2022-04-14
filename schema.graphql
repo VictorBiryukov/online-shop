@@ -109,9 +109,38 @@ interface OrderDetail {
   chgCnt: Long
   lastChangeDate: _DateTime
   type: String!
+  statusReasonForVendor: String
   order(alias: String): Order!
   aggregateRoot(alias: String): Order
+  statusForVendor(alias: String): Status
   goodType: _G_GoodTypeReference!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+interface Pckg {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  serialNumber: String
+  type: String!
+  vendor(alias: String): Vendor!
+  aggregateRoot(alias: String): Vendor
+  deliveryAddress: _G_DeliveryAddress!
+  orderDetail: _G_OrderDetailReference!
   _getChar(expression: String!): Char
   _getString(expression: String!): String
   _getByte(expression: String!): Byte
@@ -401,6 +430,13 @@ interface Vendor {
   lastChangeDate: _DateTime
   name: String
   type: String!
+  pckgList(
+    elemAlias: String
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_Pckg!
   _getChar(expression: String!): Char
   _getString(expression: String!): String
   _getByte(expression: String!): Byte
@@ -429,6 +465,10 @@ input _CompareOrderInput {
   orderDate: _OffsetDateTime
 }
 
+input _ComparePckgInput {
+  serialNumber: String
+}
+
 input _CompareVendorInput {
   name: String
 }
@@ -448,6 +488,7 @@ input _CreateGoodTypeInput {
 }
 
 input _CreateOrderDetailInput {
+  statusForVendor: _StatusInput
   goodType: _SingleReferenceInput
   order: ID!
 }
@@ -459,6 +500,13 @@ input _CreateOrderInput {
   comment: String
   orderDate: _OffsetDateTime
   customer: _SingleReferenceInput
+}
+
+input _CreatePckgInput {
+  serialNumber: String
+  deliveryAddress: _DeliveryAddressInput
+  vendor: ID!
+  orderDetail: _DoubleReferenceInput
 }
 
 input _CreateVendorInput {
@@ -483,6 +531,11 @@ input _DeliveryAddressInput {
   regionIso: String
 }
 
+input _DoubleReferenceInput {
+  rootEntityId: String!
+  entityId: String!
+}
+
 type _EC_Customer {
   elems: [Customer!]!
   count: Int!
@@ -500,6 +553,11 @@ type _EC_Order {
 
 type _EC_OrderDetail {
   elems: [OrderDetail!]!
+  count: Int!
+}
+
+type _EC_Pckg {
+  elems: [Pckg!]!
   count: Int!
 }
 
@@ -645,9 +703,38 @@ type _E_OrderDetail implements _Entity & OrderDetail {
   chgCnt: Long
   lastChangeDate: _DateTime
   type: String!
+  statusReasonForVendor: String
   order(alias: String): Order!
   aggregateRoot(alias: String): Order
+  statusForVendor(alias: String): Status
   goodType: _G_GoodTypeReference!
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _E_Pckg implements _Entity & Pckg {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  serialNumber: String
+  type: String!
+  vendor(alias: String): Vendor!
+  aggregateRoot(alias: String): Vendor
+  deliveryAddress: _G_DeliveryAddress!
+  orderDetail: _G_OrderDetailReference!
   _getChar(expression: String!): Char
   _getString(expression: String!): String
   _getByte(expression: String!): Byte
@@ -934,6 +1021,13 @@ type _E_Vendor implements _Entity & Vendor {
   lastChangeDate: _DateTime
   name: String
   type: String!
+  pckgList(
+    elemAlias: String
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_Pckg!
   _getChar(expression: String!): Char
   _getString(expression: String!): String
   _getByte(expression: String!): Byte
@@ -983,6 +1077,12 @@ type _G_GoodTypeReference {
   entity: GoodType
 }
 
+type _G_OrderDetailReference {
+  entityId: String
+  rootEntityId: String
+  entity: OrderDetail
+}
+
 type _G_VendorReference {
   entityId: String
   entity: Vendor
@@ -997,6 +1097,9 @@ input _IncGoodTypeInput {
 }
 
 enum _KeyOrder {
+  # statusForVendor_openOrderFlag
+  statusForVendor_openOrderFlag
+
   # openOrderFlag
   openOrderFlag
 }
@@ -1032,6 +1135,10 @@ type _Packet {
   updateCustomer(input: _UpdateCustomerInput!): Customer
   getCustomer(id: ID!): Customer
   deleteCustomer(id: ID!): String
+  createPckg(input: _CreatePckgInput!): Pckg
+  updatePckg(input: _UpdatePckgInput!, compare: _ComparePckgInput): Pckg
+  getPckg(id: ID!): Pckg
+  deletePckg(id: ID!, compare: _ComparePckgInput): String
   createVendor(input: _CreateVendorInput!): Vendor
   updateOrCreateVendor(
     input: _CreateVendorInput!
@@ -1073,6 +1180,12 @@ type _Query {
     offset: Int
     sort: [_SortCriterionSpecification!]
   ): _EC_Vendor!
+  searchPckg(
+    cond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+  ): _EC_Pckg!
   searchOrder(
     cond: String
     limit: Int
@@ -1163,6 +1276,15 @@ type _Query {
     sort: [_SortCriterionSpecification!]
     distinct: Boolean
   ): _SEC_Vendor!
+  selectionByPckg(
+    cond: String
+    group: [String!]
+    groupCond: String
+    limit: Int
+    offset: Int
+    sort: [_SortCriterionSpecification!]
+    distinct: Boolean
+  ): _SEC_Pckg!
   selectionByOrder(
     cond: String
     group: [String!]
@@ -1293,6 +1415,11 @@ type _R_OrderDetail implements _Reference {
   entity: OrderDetail
 }
 
+type _R_Pckg implements _Reference {
+  entityId: String
+  entity: Pckg
+}
+
 type _R_RootDictionary implements _Reference {
   entityId: String
   entity: RootDictionary
@@ -1364,6 +1491,11 @@ type _SEC_Order {
 
 type _SEC_OrderDetail {
   elems: [_SE_OrderDetail!]!
+  count: Int!
+}
+
+type _SEC_Pckg {
+  elems: [_SE_Pckg!]!
   count: Int!
 }
 
@@ -1495,6 +1627,30 @@ type _SE_OrderDetail {
   aggVersion: Long!
   chgCnt: Long
   lastChangeDate: _DateTime
+  type: String!
+  statusReasonForVendor: String
+  _getChar(expression: String!): Char
+  _getString(expression: String!): String
+  _getByte(expression: String!): Byte
+  _getShort(expression: String!): Short
+  _getInt(expression: String!): Int
+  _getLong(expression: String!): Long
+  _getFloat(expression: String!): _Float4
+  _getDouble(expression: String!): Float
+  _getBigDecimal(expression: String!): BigDecimal
+  _getDate(expression: String!): _Date
+  _getDateTime(expression: String!): _DateTime
+  _getOffsetDateTime(expression: String!): _OffsetDateTime
+  _getBoolean(expression: String!): Boolean
+  _getByteArray(expression: String!): _ByteArray
+}
+
+type _SE_Pckg {
+  id: ID!
+  aggVersion: Long!
+  chgCnt: Long
+  lastChangeDate: _DateTime
+  serialNumber: String
   type: String!
   _getChar(expression: String!): Char
   _getString(expression: String!): String
@@ -1815,6 +1971,7 @@ type _UpdateOrCreateVendorResponse {
 }
 
 input _UpdateOrderDetailInput {
+  statusForVendor: _StatusInput
   goodType: _SingleReferenceInput
   order: ID
   id: ID!
@@ -1827,6 +1984,14 @@ input _UpdateOrderInput {
   comment: String
   orderDate: _OffsetDateTime
   customer: _SingleReferenceInput
+  id: ID!
+}
+
+input _UpdatePckgInput {
+  serialNumber: String
+  deliveryAddress: _DeliveryAddressInput
+  vendor: ID
+  orderDetail: _DoubleReferenceInput
   id: ID!
 }
 

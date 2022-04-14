@@ -34,5 +34,13 @@
   {
     "name": "deleteOrderDetail",
     "body": "mutation deleteOrderDetail($orderDetailId: ID!) {\n  packet {\n    deleteOrderDetail(id: $orderDetailId)\n  }\n}"
+  },
+  {
+    "name": "searchOrderDetailForVendor",
+    "body": "query searchOrderDetailForVendor($cond: String) {\n  searchOrderDetail(cond: $cond) {\n    elems {\n      ...OrderDetailForVendorAttributes\n    }\n  }\n}\n    fragment OrderDetailForVendorAttributes on _E_OrderDetail {\n  id\n  __typename\n  statusForVendor {\n    code\n  }\n  order {\n    id\n    deliveryAddress {\n      ...AddressAttributes\n    }\n  }\n  goodType {\n    entity {\n      id\n      __typename\n      name\n      vendor {\n        entityId\n      }\n    }\n  }\n}\n    fragment AddressAttributes on _G_DeliveryAddress {\n  countryIso\n  regionIso\n  city\n  street\n  flatNumber\n}"
+  },
+  {
+    "name": "createPckg",
+    "body": "mutation createPckg($vendorId: ID!, $serialNumber: String!, $deliveryAddress: _DeliveryAddressInput!, $orderDetailId: ID!, $orderDetailRef: String!, $orderRef: String!) {\n  p1: packet {\n    createPckg(\n      input: {vendor: $vendorId, serialNumber: $serialNumber, deliveryAddress: $deliveryAddress, orderDetail: {rootEntityId: $orderRef, entityId: $orderDetailRef}}\n    ) {\n      id\n    }\n  }\n  p2: packet {\n    updateOrderDetail(\n      input: {id: $orderDetailId, statusForVendor: {code: \"PACKAGED\"}}\n    ) {\n      id\n    }\n  }\n}"
   }
 ]
