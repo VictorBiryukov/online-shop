@@ -26,7 +26,7 @@
     "disableJwtVerification": false,
     "checkSelects": [
       {
-        "conditionValue": "'manager' $in ${jwt:realm_access.roles}",
+        "conditionValue": "'manager' $in ${[]:jwt:realm_access.roles}",
         "orderValue": "0",
         "typeName": "",
         "description": "Only manager can create/update good type info"
@@ -46,7 +46,7 @@
     "disableJwtVerification": false,
     "checkSelects": [
       {
-        "conditionValue": "${customerId} == ${jwt:email} && 'customer' $in ${jwt:realm_access.roles}",
+        "conditionValue": "${customerId} == ${jwt:email} && 'customer' $in ${[]:jwt:realm_access.roles}",
         "orderValue": "0",
         "typeName": "",
         "description": "Only  customer can add detail to his own order"
@@ -110,7 +110,7 @@
     "disableJwtVerification": false,
     "checkSelects": [
       {
-        "conditionValue": "'supervisor' $in ${jwt:realm_access.roles}",
+        "conditionValue": "'supervisor' $in ${[]:jwt:realm_access.roles}",
         "orderValue": "0",
         "typeName": "",
         "description": "Only supervisor can see customers personal data"
@@ -130,7 +130,7 @@
     "disableJwtVerification": false,
     "checkSelects": [
       {
-        "conditionValue": "'supervisor' $in ${jwt:realm_access.roles} || 'manager' $in ${jwt:realm_access.roles}",
+        "conditionValue": "'supervisor' $in ${[]:jwt:realm_access.roles} || 'manager' $in ${[]:jwt:realm_access.roles}",
         "orderValue": "0",
         "typeName": "",
         "description": "Only manager or supervisor can see all orders"
@@ -139,7 +139,7 @@
     "paramAdditions": [
       {
         "paramName": "cond",
-        "paramAddition": "'supervisor' $in ${jwt:realm_access.roles} || ('manager' $in ${jwt:realm_access.roles} && it.statusForVendor.code == 'FIXED' )"
+        "paramAddition": "'supervisor' $in ${[]:jwt:realm_access.roles} || ('manager' $in ${[]:jwt:realm_access.roles} && it.statusForVendor.code == 'FIXED' )"
       }
     ]
   },
@@ -162,7 +162,7 @@
     "disableJwtVerification": true,
     "checkSelects": [
       {
-        "conditionValue": "'customer' $in ${jwt:realm_access.roles}",
+        "conditionValue": "'customer' $in ${[]:jwt:realm_access.roles}",
         "orderValue": "0",
         "typeName": "",
         "description": "Only customer can see his own orders"
